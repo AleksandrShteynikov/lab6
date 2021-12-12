@@ -86,7 +86,10 @@ public class Server implements Watcher {
     @Override
     public void process(WatchedEvent watchedEvent) {
         try {
-            List<String> ports = new ArrayList<>(zoo.getChildren(KEEPER_PATH, this));
+            List<String> ports = new ArrayList<>();
+            for (String node : zoo.getChildren(KEEPER_PATH, this)) {
+                ports.add();
+            }
             config.tell(new PortList(ports), ActorRef.noSender());
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
