@@ -15,7 +15,9 @@ public class ConfigActor extends AbstractActor {
                 .match(PortRequest.class, req -> {
                     getSender().tell(getRandom(), self());
                 })
-                .match(PortList.class)
+                .match(PortList.class, portList -> {
+
+                })
                 .build();
     }
 
