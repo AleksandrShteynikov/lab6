@@ -50,7 +50,7 @@ public class Server implements Watcher {
                         parameter(COUNT_QUERY_KEY, count -> {
                             int numOfRedir = Integer.parseInt(count);
                             if (numOfRedir == 0) {
-
+                                return http.singleRequest()
                             } else {
 
                             }
