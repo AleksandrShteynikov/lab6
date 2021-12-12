@@ -43,7 +43,7 @@ public class Server implements Watcher {
         ActorRef config = system.actorOf(Props.create(ConfigActor.class));
         final Http http = Http.get(system);
         final ActorMaterializer materializer = ActorMaterializer.create(system);
-        final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = createRoute(config).flow(system, materializer)
+        final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = createRoute(http, config).flow(system, materializer);
         int Port = Integer.parseInt(args[1]);
         final CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow,
                 ConnectHttp.toHost(HOST_NAME, Port), materializer);
@@ -62,16 +62,16 @@ public class Server implements Watcher {
                             } else {
                                 return completeWithFuture(Patterns.ask(config, new PortRequest(), TIMEOUT)
                                         .thenApply(port -> {
-                                            return http.singleRequest(HttpRequest.create(makeRequest((String)port,
-                                                                                                      url,
-                                                                                                numOfRedir - 1)));
+                                            return http.singleRequest(HttpRequest.create(composeRequest((String)port,
+                                                                                                         url,
+                                                                                                   numOfRedir - 1)));
                                         }));
                             }
                         })))))
         );
     }
 
-    private static String makeRequest(String port, String url, int count) {
+    private static String composeRequest(String port, String url, int count) {
         return SCHEMA + HOST_NAME + DELIMITER + port + QUERY_START + URL_QUERY_KEY + QUERY_ASSIGN
                 + url + QUERY_DELIM + COUNT_QUERY_KEY + QUERY_ASSIGN + count;
     }
