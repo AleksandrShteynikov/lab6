@@ -5,8 +5,8 @@ import org.apache.zookeeper.Watcher;
 
 public class Server implements Watcher {
 
-    public Server() {
-
+    public static void main(String[] args) {
+        
     }
 
     @Override
