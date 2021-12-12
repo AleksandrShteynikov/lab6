@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigActor extends AbstractActor {
-    private List<String> ports = new ArrayList<>();
+    private List<String> ports;
 
     @Override
     public Receive createReceive() {
