@@ -18,13 +18,14 @@ import org.apache.zookeeper.Watcher;
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
 
-import static akka.http.javadsl.server.Directives.route;
+import static akka.http.javadsl.server.Directives.*;
 
 public class Server implements Watcher {
 
     private final static String AKKA_SYSTEM_NAME = "AkkaAnonimizer";
     private final static String HOST_NAME = "localhost";
     private final static String SERVER_MSG = "Server online at http://" + HOST_NAME + ":";
+    private final static String URL_EXT = "";
 
     public static void main(String[] args) throws IOException {
         ActorSystem system = ActorSystem.create(AKKA_SYSTEM_NAME);
@@ -42,7 +43,7 @@ public class Server implements Watcher {
 
     private static Route createRoute(ActorRef config) {
         return route(
-                path()
+                path(URL_EXT, () -> route(get(() -> parameter())))
         );
     }
 
