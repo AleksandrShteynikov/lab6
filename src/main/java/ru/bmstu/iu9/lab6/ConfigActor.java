@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigActor extends AbstractActor {
-    private List<String> ports;
+    private List<String> ports = new ArrayList<>();
 
     @Override
     public Receive createReceive() {
@@ -15,8 +15,8 @@ public class ConfigActor extends AbstractActor {
                 .match(PortRequest.class, req -> {
                     getSender().tell(getRandom(), self());
                 })
-                .match(List.class, portList -> {
-                    ports = portList;
+                .match(PortList.class, portList -> {
+
                 })
                 .build();
     }
