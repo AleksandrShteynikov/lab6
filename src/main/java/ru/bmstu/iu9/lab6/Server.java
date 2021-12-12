@@ -43,10 +43,11 @@ public class Server implements Watcher {
     private final static String COUNT_QUERY_KEY = "count";
 
     private ZooKeeper zoo;
+    private ActorRef config;
 
     public void main(String[] args) throws IOException {
         ActorSystem system = ActorSystem.create(AKKA_SYSTEM_NAME);
-        ActorRef config = system.actorOf(Props.create(ConfigActor.class));
+        config = system.actorOf(Props.create(ConfigActor.class));
         zoo = new ZooKeeper(KEEPER_SERVER, TIMEOUT, this);
         final Http http = Http.get(system);
         final ActorMaterializer materializer = ActorMaterializer.create(system);
@@ -84,11 +85,9 @@ public class Server implements Watcher {
 
     @Override
     public void process(WatchedEvent watchedEvent) {
-        List<String> ports = new ArrayList<>();
         try {
-            for (String port : zoo.getChildren(KEEPER_PATH, this)) {
-                
-            }
+            List<String> ports = new ArrayList<>(zoo.getChildren(KEEPER_PATH, this));
+            config.tell(ports, ActorRef.noSender());
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }
