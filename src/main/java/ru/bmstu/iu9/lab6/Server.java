@@ -26,13 +26,15 @@ public class Server implements Watcher {
 
     private final static int TIMEOUT = 5000;
     private final static String KEEPER_PATH = "/servers";
+    private final static String KEEPER_PATH_EXT = "/s";
     private final static String AKKA_SYSTEM_NAME = "AkkaAnonimizer";
     private final static String KEEPER_SERVER = "localhost:2181";
     private final static String HOST_NAME = "localhost";
     private final static String DELIMITER = ":";
     private final static String SCHEMA = "http://";
     private final static String QUERY_DELIM = "&";
-    private final static String QUERY_START = "/?";
+    private final static String QUERY_START = "?";
+    private final static String PATH_DELIM = "/";
     private final static String QUERY_ASSIGN = "=";
     private final static String SERVER_MSG = "Server online at http://" + HOST_NAME + ":";
     private final static String URL_EXT = "";
@@ -46,7 +48,10 @@ public class Server implements Watcher {
         ActorSystem system = ActorSystem.create(AKKA_SYSTEM_NAME);
         config = system.actorOf(Props.create(ConfigActor.class));
         zoo = new ZooKeeper(KEEPER_SERVER, TIMEOUT, this);
-        zoo.create(KEEPER_PATH + "/s", (SCHEMA + HOST_NAME + DELIMITER + port).getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+        zoo.create(KEEPER_PATH + KEEPER_PATH_EXT,
+                    (SCHEMA + HOST_NAME + DELIMITER + port).getBytes(),
+                    ZooDefs.Ids.OPEN_ACL_UNSAFE,
+                    CreateMode.EPHEMERAL_SEQUENTIAL);
         final Http http = Http.get(system);
         final ActorMaterializer materializer = ActorMaterializer.create(system);
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = createRoute(http, config).flow(system, materializer);
@@ -67,17 +72,17 @@ public class Server implements Watcher {
                             } else {
                                 return completeWithFuture(Patterns
                                         .ask(config, new PortRequest(), java.time.Duration.ofMillis(TIMEOUT))
-                                        .thenCompose(port -> http.singleRequest(HttpRequest.create(port + "/?url=" + url + "&count=" + (numOfRedir - 1)))));
-                                        /*.thenCompose(port -> http.singleRequest(HttpRequest.create(composeRequest((String)port,
-                                                                                                                   url,
-                                                                                                             numOfRedir - 1)))));*/
+                                        .thenCompose(port ->
+                                                http.singleRequest(HttpRequest.create(composeRequest((String)port,
+                                                                                                     url,
+                                                                                                     (numOfRedir - 1))))));
                             }
                         })))))
         );
     }
 
     private static String composeRequest(String port, String url, int count) {
-        return SCHEMA + HOST_NAME + DELIMITER + port + QUERY_START + URL_QUERY_KEY + QUERY_ASSIGN
+        return port + PATH_DELIM + QUERY_START + URL_QUERY_KEY + QUERY_ASSIGN
                 + url + QUERY_DELIM + COUNT_QUERY_KEY + QUERY_ASSIGN + count;
     }
 
@@ -86,7 +91,7 @@ public class Server implements Watcher {
         try {
             List<String> ports = new ArrayList<>();
             for (String node : zoo.getChildren(KEEPER_PATH, this)) {
-                ports.add(new String(zoo.getData(KEEPER_PATH + "/" + node, false, null)));
+                ports.add(new String(zoo.getData(KEEPER_PATH + PATH_DELIM + node, false, null)));
             }
             config.tell(new PortList(ports), ActorRef.noSender());
         } catch (KeeperException | InterruptedException e) {
