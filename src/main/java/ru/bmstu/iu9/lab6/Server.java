@@ -28,6 +28,11 @@ public class Server implements Watcher {
     private final static int TIMEOUT = 5000;
     private final static String AKKA_SYSTEM_NAME = "AkkaAnonimizer";
     private final static String HOST_NAME = "localhost";
+    private final static String DELIMITER = ":";
+    private final static String SCHEMA = "http://";
+    private final static String QUERY_DELIM = "&";
+    private final static String QUERY_START = "/?";
+    private final static String QUERY = "/?";
     private final static String SERVER_MSG = "Server online at http://" + HOST_NAME + ":";
     private final static String URL_EXT = "";
     private final static String URL_QUERY_KEY = "testUrl";
@@ -56,10 +61,17 @@ public class Server implements Watcher {
                                 return completeWithFuture(http.singleRequest(HttpRequest.create(url)));
                             } else {
                                 return completeWithFuture(Patterns.ask(config, new PortRequest(), TIMEOUT)
-                                        .thenApply());
+                                        .thenApply(port -> {
+                                            return http.singleRequest(HttpRequest.create());
+                                        }));
                             }
                         })))))
         );
+    }
+
+    private static String makeRequest(String port, String url, int count) {
+        return SCHEMA + HOST_NAME + DELIMITER + port + QUERY_START + URL_QUERY_KEY + url + QUERY_DELIM +
+                COUNT_QUERY_KEY + count
     }
 
     @Override
