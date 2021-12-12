@@ -26,6 +26,8 @@ public class Server implements Watcher {
     private final static String HOST_NAME = "localhost";
     private final static String SERVER_MSG = "Server online at http://" + HOST_NAME + ":";
     private final static String URL_EXT = "";
+    private final static String URL_QUERY_KEY = "testUrl";
+    private final static String COUNT_QUERY_KEY = "count";
 
     public static void main(String[] args) throws IOException {
         ActorSystem system = ActorSystem.create(AKKA_SYSTEM_NAME);
@@ -43,7 +45,9 @@ public class Server implements Watcher {
 
     private static Route createRoute(ActorRef config) {
         return route(
-                path(URL_EXT, () -> route(get(() -> parameter())))
+                path(URL_EXT, () -> route(get(() -> parameter(URL_QUERY_KEY, id -> {
+                    
+                }))))
         );
     }
 
