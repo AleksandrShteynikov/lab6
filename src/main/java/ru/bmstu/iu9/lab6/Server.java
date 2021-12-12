@@ -28,6 +28,7 @@ public class Server implements Watcher {
 
     private final static int TIMEOUT = 5000;
     private final static String AKKA_SYSTEM_NAME = "AkkaAnonimizer";
+    private final static String KEEPER_SERVER = "localhost:2181";
     private final static String HOST_NAME = "localhost";
     private final static String DELIMITER = ":";
     private final static String SCHEMA = "http://";
