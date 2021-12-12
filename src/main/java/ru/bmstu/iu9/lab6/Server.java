@@ -17,6 +17,8 @@ import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static akka.http.javadsl.server.Directives.*;
@@ -75,6 +77,7 @@ public class Server implements Watcher {
 
     @Override
     public void process(WatchedEvent watchedEvent) {
-        
+        List<String> ports = new ArrayList<>();
+        for (String port : )
     }
 }
