@@ -67,7 +67,7 @@ public class Server implements Watcher {
                             } else {
                                 return completeWithFuture(Patterns
                                         .ask(config, new PortRequest(), java.time.Duration.ofMillis(TIMEOUT))
-                                        .thenCompose(port -> http.singleRequest(HttpRequest.create((String)port))));
+                                        .thenCompose(port -> http.singleRequest(HttpRequest.create(port + "/?testUrl=" + url + "&count=" + (numOfRedir - 1)))));
                                         /*.thenCompose(port -> http.singleRequest(HttpRequest.create(composeRequest((String)port,
                                                                                                                    url,
                                                                                                              numOfRedir - 1)))));*/
