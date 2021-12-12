@@ -41,6 +41,7 @@ public class Server implements Watcher {
     public static void main(String[] args) throws IOException {
         ActorSystem system = ActorSystem.create(AKKA_SYSTEM_NAME);
         ActorRef config = system.actorOf(Props.create(ConfigActor.class));
+        
         final Http http = Http.get(system);
         final ActorMaterializer materializer = ActorMaterializer.create(system);
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = createRoute(http, config).flow(system, materializer);
@@ -78,6 +79,6 @@ public class Server implements Watcher {
     @Override
     public void process(WatchedEvent watchedEvent) {
         List<String> ports = new ArrayList<>();
-        for (String port : )
+        for (String port : zooKeeper.getChildren())
     }
 }
