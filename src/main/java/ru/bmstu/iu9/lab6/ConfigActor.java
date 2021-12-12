@@ -5,9 +5,11 @@ import akka.japi.pf.ReceiveBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ConfigActor extends AbstractActor {
     private List<String> ports = new ArrayList<>();
+    Random random = new Random();
 
     @Override
     public Receive createReceive() {
@@ -22,6 +24,6 @@ public class ConfigActor extends AbstractActor {
     }
 
     private String getRandom() {
-        return null;
+        return ports.get(random.nextInt(ports.size()));
     }
 }
