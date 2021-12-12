@@ -42,20 +42,19 @@ public class Server implements Watcher {
     private final static String URL_QUERY_KEY = "testUrl";
     private final static String COUNT_QUERY_KEY = "count";
 
-    private ZooKeeper zoo;
-    private ActorRef config;
+    private final ZooKeeper zoo;
+    private final ActorRef config;
 
-    public void main(String[] args) throws IOException {
+    public Server(int port) throws IOException {
         ActorSystem system = ActorSystem.create(AKKA_SYSTEM_NAME);
         config = system.actorOf(Props.create(ConfigActor.class));
         zoo = new ZooKeeper(KEEPER_SERVER, TIMEOUT, this);
         final Http http = Http.get(system);
         final ActorMaterializer materializer = ActorMaterializer.create(system);
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = createRoute(http, config).flow(system, materializer);
-        int Port = Integer.parseInt(args[1]);
         final CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow,
-                ConnectHttp.toHost(HOST_NAME, Port), materializer);
-        System.out.println(SERVER_MSG + Port);
+                ConnectHttp.toHost(HOST_NAME, port), materializer);
+        System.out.println(SERVER_MSG + port);
         System.in.read();
         binding.thenCompose(ServerBinding::unbind).thenAccept(unbound -> system.terminate());
     }
