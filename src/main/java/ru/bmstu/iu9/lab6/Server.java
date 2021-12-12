@@ -87,7 +87,7 @@ public class Server implements Watcher {
     public void process(WatchedEvent watchedEvent) {
         try {
             List<String> ports = new ArrayList<>(zoo.getChildren(KEEPER_PATH, this));
-            config.tell(ports, ActorRef.noSender());
+            config.tell(new PortList(ports), ActorRef.noSender());
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }
