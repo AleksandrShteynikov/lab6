@@ -15,8 +15,6 @@ import akka.http.javadsl.model.HttpResponse;
 import akka.stream.ActorMaterializer;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.omg.CORBA.TIMEOUT;
-import scala.Int;
 
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
@@ -60,8 +58,9 @@ public class Server implements Watcher {
                             if (numOfRedir == 0) {
                                 return completeWithFuture(http.singleRequest(HttpRequest.create(url)));
                             } else {
-                                return completeWithFuture(Patterns.ask(config, new PortRequest(), TIMEOUT)
-                                        .thenApply(port -> {
+                                return completeWithFuture(Patterns
+                                        .ask(config, new PortRequest(), java.time.Duration.ofMillis(TIMEOUT))
+                                        .thenCompose(port -> {
                                             return http.singleRequest(HttpRequest.create(composeRequest((String)port,
                                                                                                          url,
                                                                                                    numOfRedir - 1)));
