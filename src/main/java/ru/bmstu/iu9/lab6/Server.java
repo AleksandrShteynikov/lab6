@@ -13,6 +13,7 @@ import akka.stream.javadsl.Flow;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.stream.ActorMaterializer;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -27,6 +28,7 @@ import static akka.http.javadsl.server.Directives.*;
 public class Server implements Watcher {
 
     private final static int TIMEOUT = 5000;
+    private final static String KEEPER_PATH = "/servers";
     private final static String AKKA_SYSTEM_NAME = "AkkaAnonimizer";
     private final static String KEEPER_SERVER = "localhost:2181";
     private final static String HOST_NAME = "localhost";
@@ -83,8 +85,12 @@ public class Server implements Watcher {
     @Override
     public void process(WatchedEvent watchedEvent) {
         List<String> ports = new ArrayList<>();
-        for (String port : zoo.getChildren()) {
-            
+        try {
+            for (String port : zoo.getChildren(KEEPER_PATH, this)) {
+                
+            }
+        } catch (KeeperException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
