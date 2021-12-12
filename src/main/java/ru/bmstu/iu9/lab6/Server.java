@@ -49,7 +49,7 @@ public class Server implements Watcher {
         ActorSystem system = ActorSystem.create(AKKA_SYSTEM_NAME);
         config = system.actorOf(Props.create(ConfigActor.class));
         zoo = new ZooKeeper(KEEPER_SERVER, TIMEOUT, this);
-        
+        zoo.create(KEEPER_PATH + "/s", (SCHEMA + HOST_NAME + DELIMITER + port).getBytes(), );
         final Http http = Http.get(system);
         final ActorMaterializer materializer = ActorMaterializer.create(system);
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = createRoute(http, config).flow(system, materializer);
