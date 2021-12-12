@@ -60,11 +60,9 @@ public class Server implements Watcher {
                             } else {
                                 return completeWithFuture(Patterns
                                         .ask(config, new PortRequest(), java.time.Duration.ofMillis(TIMEOUT))
-                                        .thenCompose(port -> {
-                                            return http.singleRequest(HttpRequest.create(composeRequest((String)port,
-                                                                                                         url,
-                                                                                                   numOfRedir - 1)));
-                                        }));
+                                        .thenCompose(port -> http.singleRequest(HttpRequest.create(composeRequest((String)port,
+                                                                                                                   url,
+                                                                                                             numOfRedir - 1)))));
                             }
                         })))))
         );
@@ -77,6 +75,6 @@ public class Server implements Watcher {
 
     @Override
     public void process(WatchedEvent watchedEvent) {
-
+        
     }
 }
