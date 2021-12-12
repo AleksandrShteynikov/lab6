@@ -51,7 +51,6 @@ public class Server implements Watcher {
                             int numOfRedir = Integer.parseInt(count);
                             if (numOfRedir == 0) {
                                 return http.singleRequest(HttpRequest.create(url))
-                                        .thenApply()
                             } else {
 
                             }
