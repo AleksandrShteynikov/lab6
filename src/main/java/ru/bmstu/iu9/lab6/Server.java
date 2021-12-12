@@ -44,12 +44,16 @@ public class Server implements Watcher {
         binding.thenCompose(ServerBinding::unbind).thenAccept(unbound -> system.terminate());
     }
 
-    private static Route createRoute(ActorRef config) {
+    private static Route createRoute(Http http, ActorRef config) {
         return route(
                 path(URL_EXT, () -> route(get(() -> parameter(URL_QUERY_KEY, id ->
                         parameter(COUNT_QUERY_KEY, count -> {
                             int numOfRedir = Integer.parseInt(count);
-                            if (numOfRedir == 0)
+                            if (numOfRedir == 0) {
+
+                            } else {
+
+                            }
                         })))))
         );
     }
