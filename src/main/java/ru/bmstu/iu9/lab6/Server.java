@@ -55,7 +55,7 @@ public class Server implements Watcher {
                             if (numOfRedir == 0) {
                                 return completeWithFuture(http.singleRequest(HttpRequest.create(url)));
                             } else {
-                                return completeWithFuture(Patterns.ask(config, "", TIMEOUT)
+                                return completeWithFuture(Patterns.ask(config, new PortRequest(), TIMEOUT)
                                         .thenApply());
                             }
                         })))))
