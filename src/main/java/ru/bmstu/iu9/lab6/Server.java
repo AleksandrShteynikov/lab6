@@ -14,6 +14,7 @@ import akka.http.javadsl.model.HttpResponse;
 import akka.stream.ActorMaterializer;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
+import scala.Int;
 
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
@@ -45,9 +46,11 @@ public class Server implements Watcher {
 
     private static Route createRoute(ActorRef config) {
         return route(
-                path(URL_EXT, () -> route(get(() -> parameter(URL_QUERY_KEY, id -> {
-                    
-                }))))
+                path(URL_EXT, () -> route(get(() -> parameter(URL_QUERY_KEY, id ->
+                        parameter(COUNT_QUERY_KEY, count -> {
+                            int numOfRedir = Integer.parseInt(count);
+                            if (numOfRedir == 0)
+                        })))))
         );
     }
 
