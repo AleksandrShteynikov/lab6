@@ -8,12 +8,14 @@ import akka.http.javadsl.ConnectHttp;
 import akka.http.javadsl.Http;
 import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.server.Route;
+import akka.pattern.Patterns;
 import akka.stream.javadsl.Flow;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.stream.ActorMaterializer;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
+import org.omg.CORBA.TIMEOUT;
 import scala.Int;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ import static akka.http.javadsl.server.Directives.*;
 
 public class Server implements Watcher {
 
+    private final static int TIMEOUT = 5000;
     private final static String AKKA_SYSTEM_NAME = "AkkaAnonimizer";
     private final static String HOST_NAME = "localhost";
     private final static String SERVER_MSG = "Server online at http://" + HOST_NAME + ":";
@@ -52,7 +55,8 @@ public class Server implements Watcher {
                             if (numOfRedir == 0) {
                                 return completeWithFuture(http.singleRequest(HttpRequest.create(url)));
                             } else {
-                                
+                                return completeWithFuture(Patterns.ask(config, "", TIMEOUT)
+                                        .thenApply());
                             }
                         })))))
         );
