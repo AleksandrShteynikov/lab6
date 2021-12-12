@@ -36,7 +36,7 @@ public class Server implements Watcher {
     private final static String QUERY_ASSIGN = "=";
     private final static String SERVER_MSG = "Server online at http://" + HOST_NAME + ":";
     private final static String URL_EXT = "";
-    private final static String URL_QUERY_KEY = "testUrl";
+    private final static String URL_QUERY_KEY = "url";
     private final static String COUNT_QUERY_KEY = "count";
 
     private final ZooKeeper zoo;
@@ -67,7 +67,7 @@ public class Server implements Watcher {
                             } else {
                                 return completeWithFuture(Patterns
                                         .ask(config, new PortRequest(), java.time.Duration.ofMillis(TIMEOUT))
-                                        .thenCompose(port -> http.singleRequest(HttpRequest.create(port + "/?testUrl=" + url + "&count=" + (numOfRedir - 1)))));
+                                        .thenCompose(port -> http.singleRequest(HttpRequest.create(port + "/?url=" + url + "&count=" + (numOfRedir - 1)))));
                                         /*.thenCompose(port -> http.singleRequest(HttpRequest.create(composeRequest((String)port,
                                                                                                                    url,
                                                                                                              numOfRedir - 1)))));*/
