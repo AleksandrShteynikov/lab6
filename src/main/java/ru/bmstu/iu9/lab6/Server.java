@@ -88,7 +88,7 @@ public class Server implements Watcher {
         try {
             List<String> ports = new ArrayList<>();
             for (String node : zoo.getChildren(KEEPER_PATH, this)) {
-                ports.add(zoo.getData(KEEPER_PATH + "/" + node, false, null));
+                ports.add(new String(zoo.getData(KEEPER_PATH + "/" + node, false, null)));
             }
             config.tell(new PortList(ports), ActorRef.noSender());
         } catch (KeeperException | InterruptedException e) {
