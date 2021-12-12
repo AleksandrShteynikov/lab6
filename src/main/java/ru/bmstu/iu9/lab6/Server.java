@@ -13,10 +13,7 @@ import akka.stream.javadsl.Flow;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.stream.ActorMaterializer;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,11 +42,11 @@ public class Server implements Watcher {
     private final ZooKeeper zoo;
     private final ActorRef config;
 
-    public Server(int port) throws IOException {
+    public Server(int port) throws IOException, InterruptedException, KeeperException {
         ActorSystem system = ActorSystem.create(AKKA_SYSTEM_NAME);
         config = system.actorOf(Props.create(ConfigActor.class));
         zoo = new ZooKeeper(KEEPER_SERVER, TIMEOUT, this);
-        zoo.create(KEEPER_PATH + "/s", (SCHEMA + HOST_NAME + DELIMITER + port).getBytes(), );
+        zoo.create(KEEPER_PATH + "/s", (SCHEMA + HOST_NAME + DELIMITER + port).getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
         final Http http = Http.get(system);
         final ActorMaterializer materializer = ActorMaterializer.create(system);
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = createRoute(http, config).flow(system, materializer);
