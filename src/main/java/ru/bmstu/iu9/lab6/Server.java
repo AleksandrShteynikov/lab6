@@ -46,11 +46,12 @@ public class Server implements Watcher {
 
     private static Route createRoute(Http http, ActorRef config) {
         return route(
-                path(URL_EXT, () -> route(get(() -> parameter(URL_QUERY_KEY, id ->
+                path(URL_EXT, () -> route(get(() -> parameter(URL_QUERY_KEY, url ->
                         parameter(COUNT_QUERY_KEY, count -> {
                             int numOfRedir = Integer.parseInt(count);
                             if (numOfRedir == 0) {
-                                return http.singleRequest(HttpRequest.create())
+                                return http.singleRequest(HttpRequest.create(url))
+                                        .thenApply()
                             } else {
 
                             }
